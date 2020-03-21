@@ -1,0 +1,88 @@
+---
+# tasks file for ansible-role-jitsi-meet-web
+
+- name: install base packages
+  apt:
+      name: "{{ item }}"
+      state: present
+  with_list:
+      - ufw
+      - bmon
+      - htop
+      - default-jre
+      - vim
+
+- name: configure firewall rules
+  ufw:
+      rule: "{{ item.rule }}"
+      port: "{{ item.port }}"
+      proto: "{{ item.proto }}"
+  with_items:
+      - { rule: 'allow', port: '22', proto: 'tcp' }
+      - { rule: 'allow', port: '80', proto: 'tcp' }
+      - { rule: 'allow', port: '443', proto: 'tcp' }
+
+- name: set logging
+  ufw:
+    logging: 'off'
+
+- name: set ufw policy
+  ufw:
+    state: enabled
+    policy: deny
+
+- name: add gpg key for jitsi repo
+  apt_key:
+      url: https://download.jitsi.org/jitsi-key.gpg.key
+      state: present
+
+- name: add jitsi-meet stable apt repo
+  apt_repository:
+      repo: deb https://download.jitsi.org stable/
+      state: present
+
+- name: install jitsi-meet-web
+  apt:
+      name: jitsi-meet-web
+      state: present
+
+- name: set the jitsi package so that it does not create a certificate
+  debconf:
+    name: jitsi-meet-web-config
+    question: jitsi-meet/cert-choice
+    value: 'I want to use my own certificate'
+    vtype: select
+
+- name: set the jitsi key path
+  debconf:
+    name: jitsi-meet-web-config
+    question: jitsi-meet/cert-choice
+    value: /etc/ssl/private/jitsi.key.pem
+    vtype: string
+
+- name: set the jitsi certificate path
+  debconf:
+    name: jitsi-meet-web-config
+    question: jitsi-meet/cert-path-crt
+    value: /etc/ssl/certs/jitsi.fullchain.pem
+    vtype: string
+
+- name: install jitsi-meet-web-config
+  apt:
+      name: jitsi-meet-web-config
+      state: present
+
+- name: deploy jitsi-meet-web config template
+  template:
+      src: templates/sip-communicator.properties.j2
+      dest: /etc/jitsi/jicofo/sip-communicator.properties
+
+- name: enable nginx service
+  systemd:
+      name: nginx
+      enabled: yes
+
+- name: restart nginx service
+  systemd:
+      name: nginx
+      state: restarted
