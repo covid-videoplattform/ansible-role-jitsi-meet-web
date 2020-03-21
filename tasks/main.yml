@@ -9,7 +9,6 @@
       - ufw
       - bmon
       - htop
-      - default-jre
       - vim
 
 - name: configure firewall rules
