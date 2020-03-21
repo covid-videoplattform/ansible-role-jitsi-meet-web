@@ -74,8 +74,8 @@
 
 - name: deploy jitsi-meet-web config template
   template:
-      src: templates/sip-communicator.properties.j2
-      dest: /etc/jitsi/jicofo/sip-communicator.properties
+      src: templates/localhost-config.js.j2
+      dest: /etc/jitsi/meet/localhost-config.js.j2
 
 - name: enable nginx service
   systemd:
