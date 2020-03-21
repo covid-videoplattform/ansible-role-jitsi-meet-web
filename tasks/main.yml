@@ -8,6 +8,8 @@
       - bmon
       - htop
       - vim
+      - ssl-cert
+      - nginx
 
 - name: configure firewall rules
   ufw:
@@ -43,36 +45,20 @@
       name: jitsi-meet-web
       state: present
 
-- name: set the jitsi package so that it does not create a certificate
-  debconf:
-    name: jitsi-meet-web-config
-    question: jitsi-meet/cert-choice
-    value: 'I want to use my own certificate'
-    vtype: select
-
-- name: set the jitsi key path
-  debconf:
-    name: jitsi-meet-web-config
-    question: jitsi-meet/cert-choice
-    value: /etc/ssl/private/jitsi.key.pem
-    vtype: string
-
-- name: set the jitsi certificate path
-  debconf:
-    name: jitsi-meet-web-config
-    question: jitsi-meet/cert-path-crt
-    value: /etc/ssl/certs/jitsi.fullchain.pem
-    vtype: string
-
-- name: install jitsi-meet-web-config
-  apt:
-      name: jitsi-meet-web-config
-      state: present
+- name: jitsi meet config directory
+  file:
+    path: /etc/jitsi/meet
+    state: directory
 
 - name: deploy jitsi-meet-web config template
   template:
       src: config.js.j2
-      dest: /etc/jitsi/meet/{{jitsi_domain}}-config.js.j2
+      dest: /etc/jitsi/meet/{{jitsi_domain}}-config.js
+
+- name: nginx vhost template
+  template:
+      src: nginx-vhost.conf.j2
+      dest: /etc/nginx/sites-available/default
 
 - name: enable nginx service
   systemd:
