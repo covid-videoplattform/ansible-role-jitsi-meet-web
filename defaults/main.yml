@@ -1,2 +1,2 @@
 ---
-# defaults file for ansible-role-jitsi-meet-web
+jitsi_app_name: Jitsi Meet

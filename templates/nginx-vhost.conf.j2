@@ -39,6 +39,10 @@ server {
         alias /etc/jitsi/meet/{{jitsi_domain}}-config.js;
     }
 
+    location = /interface_config.js {
+        alias /etc/jitsi/meet/{{jitsi_domain}}-interface_config.js;
+    }
+
     location = /external_api.js {
         alias /usr/share/jitsi-meet/libs/external_api.min.js;
     }
