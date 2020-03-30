@@ -28,7 +28,7 @@ var config = {
     },
 
     // BOSH URL. FIXME: use XEP-0156 to discover it.
-    bosh: '//{{ jitsi_domain }}//http-bind',
+    bosh: '//{{ jitsi_domain }}/http-bind',
 
     // The name of client node advertised in XEP-0115 'c' stanza
     clientNode: 'http://jitsi.org/jitsimeet',
@@ -235,7 +235,7 @@ var config = {
     //
 
     // Use display name as XMPP nickname.
-    // useNicks: false,
+    useNicks: false,
 
     // Require users to always specify a display name.
     requireDisplayName: true,

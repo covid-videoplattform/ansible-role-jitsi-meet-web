@@ -66,13 +66,9 @@
   template:
       src: nginx-vhost.conf.j2
       dest: /etc/nginx/sites-available/default
-
+  notify: restart nginx service
+  
 - name: enable nginx service
   systemd:
       name: nginx
       enabled: yes
-
-- name: restart nginx service
-  systemd:
-      name: nginx
-      state: restarted

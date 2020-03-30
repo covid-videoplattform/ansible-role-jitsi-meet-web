@@ -1,2 +1,5 @@
 ---
-# handlers file for ansible-role-jitsi-meet-web
+- name: restart nginx service
+  systemd:
+      name: nginx
+      state: restarted
