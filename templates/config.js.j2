@@ -9,7 +9,11 @@ var config = {
         domain: '{{ jitsi_domain }}',
 
         // When using authentication, domain for guest users.
+{% if jitsi_secure_domain %}
+        anonymousdomain: 'guest.{{ jitsi_domain }}',
+{% else %}
         // anonymousdomain: 'guest.example.com',
+{% endif %}
 
         // Domain for authenticated users. Defaults to <domain>.
         // authdomain: 'localhost',
