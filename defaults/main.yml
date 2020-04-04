@@ -1,3 +1,4 @@
 ---
 jitsi_app_name: Jitsi Meet
 jitsi_secure_domain: false
+jitsi_meet_disable_firefox: false
