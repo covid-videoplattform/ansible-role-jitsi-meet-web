@@ -62,13 +62,25 @@
       src: interface_config.js.j2
       dest: /etc/jitsi/meet/{{jitsi_domain}}-interface_config.js
 
-- name: nginx vhost template
-  template:
-      src: nginx-vhost.conf.j2
-      dest: /etc/nginx/sites-available/default
-  notify: restart nginx service
-  
-- name: enable nginx service
-  systemd:
-      name: nginx
-      enabled: yes
+- import_role:
+    name: nginx
+
+- name: flush handlers
+  meta: flush_handlers
+
+- import_role:
+    name: certificate
+  vars:
+    certificate_name: "{{ jitsi_meet_web_hostname }}"
+    certificate_directory: /etc/ssl
+    certificate_key_usage:
+      - digitalSignature
+      - keyEncipherment
+    certificate_extended_key_usage:
+      - serverAuth
+    certificate_common_name: "{{ jitsi_meet_web_hostname }}"
+
+- import_role:
+    name: nginx
+  vars:
+    nginx_vhosts: "{{ jitsi_meet_web_nginx_vhosts }}"

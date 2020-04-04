@@ -1,2 +1,57 @@
 ---
 # vars file for ansible-role-jitsi-meet-web
+jitsi_meet_web_nginx_vhosts:
+  - name: "{{ jitsi_meet_web_hostname }}"
+    server_names:
+      - "{{ jitsi_meet_web_hostname }}"
+    certificate_name: "{{ jitsi_meet_web_hostname }}"
+    custom: |-
+      root /usr/share/jitsi-meet;
+
+      # ssi on with javascript for multidomain variables in config.js
+      ssi on;
+      ssi_last_modified on;
+      ssi_types application/x-javascript application/javascript;
+
+      index index.html index.htm;
+      error_page 404 /static/404.html;
+
+      location = /config.js {
+          alias /etc/jitsi/meet/{{jitsi_domain}}-config.js;
+      }
+
+      location = /interface_config.js {
+          alias /etc/jitsi/meet/{{jitsi_domain}}-interface_config.js;
+      }
+
+      location = /external_api.js {
+          alias /usr/share/jitsi-meet/libs/external_api.min.js;
+      }
+
+      index index.html;
+
+      location ~ ^/([a-zA-Z0-9=\?]+)$ {
+        rewrite ^/(.*)$ / break;
+      }
+
+      location / {
+        ssi on;
+      }
+
+      # BOSH
+      location = /http-bind {
+          proxy_pass      http://{{prosody_ip}}:5280/http-bind;
+          proxy_set_header X-Forwarded-For $remote_addr;
+          proxy_set_header Host $http_host;
+          proxy_buffering off;
+          tcp_nodelay on;
+      }
+      # xmpp websockets
+      location /xmpp-websocket {
+          proxy_pass http://{{prosody_ip}}:5280;
+          proxy_http_version 1.1;
+          proxy_set_header Upgrade $http_upgrade;
+          proxy_set_header Connection "upgrade";
+          proxy_set_header Host $host;
+          tcp_nodelay on;
+      }
