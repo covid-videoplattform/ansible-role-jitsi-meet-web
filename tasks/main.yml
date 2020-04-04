@@ -45,7 +45,7 @@
 - name: install jitsi-meet-web
   apt:
       name: jitsi-meet-web
-      state: present
+      state: latest
 
 - name: jitsi meet config directory
   file:
