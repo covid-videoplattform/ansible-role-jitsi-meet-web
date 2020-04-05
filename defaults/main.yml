@@ -4,3 +4,4 @@ jitsi_secure_domain: false
 jitsi_meet_web_hostname: "{{inventory_hostname}}"
 jitsi_meet_resolution: 720
 jitsi_meet_disable_firefox: false
+jitsi_start_with_video_muted: false
