@@ -64,6 +64,8 @@
 
 - import_role:
     name: nginx
+  vars:
+    nginx_vhosts: []
 
 - name: flush handlers
   meta: flush_handlers
