@@ -1,5 +1,13 @@
 ---
 # vars file for ansible-role-jitsi-meet-web
+
+jitsi_meet_config:
+  hosts:
+    domain: '{{ jitsi_domain }}'
+    muc: '{{ jitsi_conference_domain }}'
+  bosh: '//{{jitsi_domain}}/http-bind'
+  enableLocalVideoFlip: false
+
 jitsi_meet_web_nginx_vhosts:
   - name: "{{ jitsi_meet_web_hostname }}"
     server_names:
@@ -40,7 +48,7 @@ jitsi_meet_web_nginx_vhosts:
 
       # BOSH
       location = /http-bind {
-          proxy_pass      http://{{prosody_ip}}:5280/http-bind;
+          proxy_pass      http://{{prosody_host}}:5280/http-bind;
           proxy_set_header X-Forwarded-For $remote_addr;
           proxy_set_header Host $http_host;
           proxy_buffering off;
@@ -48,7 +56,7 @@ jitsi_meet_web_nginx_vhosts:
       }
       # xmpp websockets
       location /xmpp-websocket {
-          proxy_pass http://{{prosody_ip}}:5280;
+          proxy_pass http://{{prosody_host}}:5280;
           proxy_http_version 1.1;
           proxy_set_header Upgrade $http_upgrade;
           proxy_set_header Connection "upgrade";
